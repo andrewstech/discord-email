@@ -124,11 +124,22 @@ bot.on('interactionCreate', async (interaction) => {
                 let time = db.get(ID).time;
                 let reply = message;
                 let response = message + '\n\n' + '--Received at ' + time + '--' + '\n\n' + original
+                let post = {
+                    "598245488977903688": "andrew@maintainers.is-a.dev"
+                }
+                let from = ``;
+                // if interaction.user.id is in post, then send from that email
+                if (post[interaction.user.id]) {
+                    from = post[interaction.user.id];
+                }
+                else {
+                    from = `hello@maintainers.is-a.dev`;
+                }
     
                 
                 const msg = {
                     to: to, // Change to your recipient
-                    from: 'hello@maintainers.is-a.dev', // Change to your verified sender
+                    from: from, // Change to your verified sender
                     subject: 'RE:' + subject,
                     text: response,
                     headers: {
