@@ -124,16 +124,16 @@ bot.on('interactionCreate', async (interaction) => {
                 let time = db.get(ID).time;
                 let reply = message;
                 let response = message + '\n\n' + '--Received at ' + time + '--' + '\n\n' + original
-                let customUsernames = {
-                    "598245488977903688": "andrew",
-                    "853158265466257448": "william"
+                let post = {
+                    "598245488977903688": "andrew@maintainers.is-a.dev",
+                    "853158265466257448": "william@maintainers.is-a.dev"
                 }
                 let from = "";
                 // if interaction.user.id is in post, then send from that email
-                if (customUsernames[interaction.user.id]) {
-                    from = `${interaction.user.tag === "0" ? `@${interaction.user.username}` : interaction.user.tag} <${customUsernames[interaction.user.id]}@maintainers.is-a.dev>`;
+                if (post[interaction.user.id]) {
+                    from = `${interaction.user.tag === "0" ? `@${interaction.user.username}` : interaction.user.tag} <${post[interaction.user.id]}>`;
                 } else {
-                    from = `${interaction.user.tag === "0" ? interaction.user.username : interaction.user.tag} <hello@maintainers.is-a.dev>`;
+                    from = `${interaction.user.tag === "0" ? `@${interaction.user.username}` : interaction.user.tag} <hello@maintainers.is-a.dev>`;
                 }
 
                 const msg = {
