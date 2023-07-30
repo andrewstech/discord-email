@@ -124,16 +124,13 @@ bot.on('interactionCreate', async (interaction) => {
                 let time = db.get(ID).time;
                 let reply = message;
                 let response = message + '\n\n' + '--Received at ' + time + '--' + '\n\n' + original
-                const htmlmessage = `<p>${response}</p>
     
-                <p> This email was sent on behalf of Is-a.dev from ${interaction.member.user.username}</p>
-                `
+                
                 const msg = {
                     to: to, // Change to your recipient
                     from: 'hello@maintainers.is-a.dev', // Change to your verified sender
-                    subject: subject,
+                    subject: 'RE:' + subject,
                     text: response,
-                    html: htmlmessage,
                     headers: {
                         "List-Unsubscribe": `<mailto:unsub@maintainers.is-a.dev?subject=Unsubscribe&body=Unsubscribe%20me%20from%20all%20emails%20from%20is-a.dev%20please.>`
                     }    
