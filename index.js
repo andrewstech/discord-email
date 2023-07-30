@@ -20,7 +20,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const bot = new Client({ intents: [GatewayIntentBits.Guilds] });
-bot.login(process.env.SENDGRID_API_KEY);
+bot.login(process.env.DISCORD);
 const emailRegex = /[\w\.-]+@[\w\.-]+\.[\w\.-]+/;
 
 app.use(bodyParser.json());
