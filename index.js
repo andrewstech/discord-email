@@ -194,7 +194,7 @@ bot.on('interactionCreate', async (interaction) => {
                 let response = message + '\n\n' + '--Received at ' + time + '--' + '\n\n' + original
                 let post = {
                     "598245488977903688": "andrew@maintainers.is-a.dev",
-                    "853158265466257448": "williamharrison@maintainers.is-a.dev"
+                    "853158265466257448": "william@maintainers.is-a.dev"
                 }
                 let from = ``;
                 // if interaction.user.id is in post, then send from that email
