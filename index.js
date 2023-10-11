@@ -61,16 +61,20 @@ app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
   // remove from array
     filteredEmails = filteredEmails[0];
     let email_id = filteredEmails
+  const maxMessageLength = 2000; // Maximum message length allowed
 
   // Create a Discord message with a reply button
   const message = `**New Email Received**\nFrom: ${filteredEmails}\nSubject: ${
     emailData.subject
   }\n\n${emailData.text}`;
 
+
+
+
   // save the emailData.html to a file
   let dataToSave = emailData.html;
   let viewID = generateUnique8DigitId();
-  let filePath = '/devmail/emails/' + viewID + '.html';
+  let filePath = viewID + '.html';
   fs.writeFile(filePath, dataToSave, (err) => {
     if (err) {
       console.error('Error writing to file:', err);
@@ -98,10 +102,20 @@ db.set(email_id, {from: filteredEmails, subject: emailData.subject, text: emailD
   try {
     const channel = await bot.channels.fetch(channelID);
     if (channel) {
-      await channel.send({
-        content: message,
-        components: [row],
-      });
+      if (!message.length <= maxMessageLength) {
+        const errorMessage = `The message is too long. View Link instead.`;
+        await channel.send({
+          content: errorMessage,
+          components: [row],
+        });
+      }
+      else {  
+        await channel.send({
+          content: message,
+          components: [row],
+        });
+      }
+
       console.log('Email forwarded to Discord successfully.');
     } else {
       console.error('Channel not found or not a text channel.');
@@ -117,7 +131,7 @@ app.get('/view/:email_id', async (req, res) => {
   const { email_id } = req.params;
   const { accessKey } = req.query;
   if (viewdb.get(email_id) === accessKey) {
-    let filePath = '/devmail/emails/' + email_id + '.html';
+    let filePath = email_id + '.html';
     res.sendFile(filePath, { root: __dirname });
   }
   else {
