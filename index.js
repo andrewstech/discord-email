@@ -2,9 +2,9 @@ const Discord = require('discord.js');
 const express = require('express');
 const bodyParser = require('body-parser');
 const JSONdb = require('simple-json-db');
-const db = new JSONdb('/devmail/db/emails.json');
-const replydb = new JSONdb('/devmail/db/replies.json');
-const viewdb = new JSONdb('/devmail/db/view.json');
+const db = new JSONdb('emails.json');
+const replydb = new JSONdb('replies.json');
+const viewdb = new JSONdb('view.json');
 const sgMail = require('@sendgrid/mail')
 require('dotenv').config()
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
