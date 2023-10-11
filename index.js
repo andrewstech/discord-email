@@ -123,6 +123,7 @@ app.get('/view/:email_id', async (req, res) => {
   else {
     res.status(404).send('Not found');
   }
+});
 
 
 bot.on('interactionCreate', async (interaction) => {
