@@ -2,11 +2,13 @@ const Discord = require('discord.js');
 const express = require('express');
 const bodyParser = require('body-parser');
 const JSONdb = require('simple-json-db');
-const db = new JSONdb('emails.json');
-const replydb = new JSONdb('replies.json');
+const db = new JSONdb('/devmail/db/emails.json');
+const replydb = new JSONdb('/devmail/db/replies.json');
+const viewdb = new JSONdb('/devmail/db/view.json');
 const sgMail = require('@sendgrid/mail')
 require('dotenv').config()
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+const fs = require('fs');
 const { Client, Collection, Events, GatewayIntentBits, EmbedBuilder, ActivityType } = require("discord.js");
 const { ButtonBuilder, ActionRowBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 
@@ -24,6 +26,23 @@ bot.login(process.env.DISCORD);
 const emailRegex = /[\w\.-]+@[\w\.-]+\.[\w\.-]+/;
 
 app.use(bodyParser.json());
+
+
+function generateUnique8DigitId() {
+  // Generate a random number between 10000000 and 99999999 inclusive.
+  const randomNumber = Math.floor(Math.random() * (99999999 - 10000000 + 1)) + 10000000;
+
+  // Convert the random number to a string.
+  const idString = randomNumber.toString();
+
+  // Add leading zeroes to the string until it is 8 digits long.
+  while (idString.length < 8) {
+    idString = `0${idString}`;
+  }
+
+  // Return the unique 8 digit ID.
+  return idString;
+}
 
 // Discord Channel ID where the bot will send messages
 const channelID = '1134982019345035354';
@@ -47,13 +66,35 @@ app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
   const message = `**New Email Received**\nFrom: ${filteredEmails}\nSubject: ${
     emailData.subject
   }\n\n${emailData.text}`;
+
+  // save the emailData.html to a file
+  let dataToSave = emailData.html;
+  let viewID = generateUnique8DigitId();
+  let filePath = '/devmail/emails/' + viewID + '.html';
+  fs.writeFile(filePath, dataToSave, (err) => {
+    if (err) {
+      console.error('Error writing to file:', err);
+    } else {
+      console.log('Data saved to file successfully.');
+    }
+  });
+
+
+  // generate a unique 8 digit id
+  const accessKey = generateUnique8DigitId();
   const reply = new ButtonBuilder()
             .setCustomId(email_id)
             .setLabel("Reply")
             .setStyle(ButtonStyle.Danger);
+  const view = new ButtonBuilder()
+            .setLabel("View HTML")
+            .setStyle(ButtonStyle.Link)
+            .setURL(`https://${process.env.ENDPOINT}/view/${viewID}?accessKey=${accessKey}`);         
   const row = new ActionRowBuilder()
-        .addComponents(reply);
-db.set(email_id, {from: filteredEmails, subject: emailData.subject, text: emailData.text, time: time});      
+        .addComponents(reply, view);
+
+viewdb.set(viewID, accessKey)     
+db.set(email_id, {from: filteredEmails, subject: emailData.subject, text: emailData.text, time: time, accessKey: accessKey});      
   try {
     const channel = await bot.channels.fetch(channelID);
     if (channel) {
@@ -71,6 +112,18 @@ db.set(email_id, {from: filteredEmails, subject: emailData.subject, text: emailD
 
   res.sendStatus(200);
 });
+
+app.get('/view/:email_id', async (req, res) => {
+  const { email_id } = req.params;
+  const { accessKey } = req.query;
+  if (viewdb.get(email_id) === accessKey) {
+    let filePath = '/devmail/emails/' + email_id + '.html';
+    res.sendFile(filePath, { root: __dirname });
+  }
+  else {
+    res.status(404).send('Not found');
+  }
+
 
 bot.on('interactionCreate', async (interaction) => {
   if (!interaction) return;
