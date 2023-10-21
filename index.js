@@ -11,6 +11,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 const fs = require('fs');
 const { Client, Collection, Events, GatewayIntentBits, EmbedBuilder, ActivityType } = require("discord.js");
 const { ButtonBuilder, ActionRowBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+const maxMessageLength = 2000; // Maximum message length allowed
 
 
 const axios = require('axios');
@@ -61,7 +62,7 @@ app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
   // remove from array
     filteredEmails = filteredEmails[0];
     let email_id = filteredEmails
-  const maxMessageLength = 2000; // Maximum message length allowed
+  
 
   // Create a Discord message with a reply button
   const message = `**New Email Received**\nFrom: ${filteredEmails}\nSubject: ${
@@ -102,7 +103,7 @@ db.set(email_id, {from: filteredEmails, subject: emailData.subject, text: emailD
   try {
     const channel = await bot.channels.fetch(channelID);
     if (channel) {
-      if (!message.length <= maxMessageLength) {
+      if (message.length <= maxMessageLength) {
         const errorMessage = `The message is too long. View Link instead.`;
         await channel.send({
           content: errorMessage,
