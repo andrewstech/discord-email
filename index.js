@@ -70,6 +70,7 @@ app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
   let dataToSave = emailData.html;
   let viewID = email_id;
   let filePath = `${htmlFileFolder}/${viewID}.html`;
+  let message = emailData.text;
 
   fs.writeFile(filePath, dataToSave, (err) => {
     if (err) {
