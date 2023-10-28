@@ -61,7 +61,7 @@ app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
   console.log(time);
   let filteredEmails = emailData.from.match(emailRegex);
   filteredEmails = filteredEmails[0];
-  let email_id = filteredEmails;
+  let email_id = generateUnique8DigitId();
 
   const message = `**New Email Received**\nFrom: ${filteredEmails}\nSubject: ${emailData.subject}\n\n${emailData.text}`;
 
@@ -92,7 +92,7 @@ app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
   try {
     const channel = await bot.channels.fetch(channelID);
     if (channel) {
-      if (message.length <= maxMessageLength) {
+      if (message.length >= maxMessageLength) {
         const errorMessage = `The message is too long. View Link instead.`;
         await channel.send({
           content: errorMessage,
