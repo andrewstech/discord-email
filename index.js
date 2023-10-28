@@ -62,11 +62,13 @@ app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
   console.log(time);
   let filteredEmails = emailData.from.match(emailRegex);
   filteredEmails = filteredEmails[0];
+  filteredEmails = filteredEmails.toString();
   let email_id = generateUnique8DigitId();
   let accessKey = generateUnique8DigitId();
 
   const messageEmbed = new EmbedBuilder()
     .setTitle(emailData.subject)
+    .setAuthor({name: filteredEmails})
     .setDescription(emailData.text);
   let dataToSave = emailData.html;
   let viewID = email_id;
@@ -98,6 +100,7 @@ app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
       if (message.length >= maxMessageLength) {
         const errorEmbed = new EmbedBuilder()
           .setTitle(emailData.subject)
+          .setAuthor({name: filteredEmails})
           .setDescription('The email was too long to be sent to Discord.');
         await channel.send({
           embeds: [errorEmbed],
