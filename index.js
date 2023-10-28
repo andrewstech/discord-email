@@ -86,7 +86,7 @@ app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
   const reply = new ButtonBuilder()
     .setCustomId('reply_' + email_id)
     .setLabel("Reply")
-    .setStyle(ButtonStyle.Danger);
+    .setStyle(ButtonStyle.Secondary);
   const view = new ButtonBuilder()
     .setLabel("View HTML")
     .setStyle(ButtonStyle.Link)
