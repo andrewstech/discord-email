@@ -66,16 +66,7 @@ app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
 
   const messageEmbed = new EmbedBuilder()
     .setTitle(`New Email Received`)
-    .addFields({
-      name: 'From',
-      value: filteredEmails,
-    }, {
-      name: 'Subject',
-      value: emailData.subject,
-    }, {
-      name: 'Message',
-      value: emailData.text,
-    });
+    .setDescription(`From: ${filteredEmails} \n Subject: ${emailData.subject} \n\n ${emailData.text}`);
   let dataToSave = emailData.html;
   let viewID = email_id;
   let filePath = `${htmlFileFolder}/${viewID}.html`;
@@ -105,14 +96,7 @@ app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
       if (message.length >= maxMessageLength) {
         const errorEmbed = new EmbedBuilder()
           .setTitle('Error')
-          .setDescription('The message is too long to be sent to Discord.')
-          .setFields({
-            name: 'from',
-            value: emailData.from,
-          }, {
-            name: 'subject',
-            value: emailData.subject,
-          });
+          .setDescription(`The message is too long to be sent to Discord. \n From: ${filteredEmails} \n Subject: ${emailData.subject}`);
         await channel.send({
           embeds: [errorEmbed],
           components: [row],
