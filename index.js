@@ -5,9 +5,11 @@ const sgMail = require('@sendgrid/mail');
 require('dotenv').config();
 const mongoose = require('mongoose');
 const fs = require('fs');
+const multer = require('multer');
 const { Client, GatewayIntentBits, ButtonStyle } = require("discord.js");
 const { ButtonBuilder, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 
+const upload = multer();
 const maxMessageLength = 2000;
 const emailRegex = /[\w\.-]+@[\w\.-]+\.[\w\.-]+/;
 const app = express();
@@ -53,7 +55,7 @@ function generateUnique8DigitId() {
 
 const channelID = '1134982019345035354';
 
-app.post('/sendgrid-webhook', async (req, res) => {
+app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
   const emailData = req.body;
   let time = new Date();
   console.log(time);
