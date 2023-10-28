@@ -114,7 +114,7 @@ app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
             value: emailData.subject,
           });
         await channel.send({
-          content: errorMessage,
+          embeds: [errorEmbed],
           components: [row],
         });
       } else {
