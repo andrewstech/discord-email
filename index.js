@@ -157,7 +157,7 @@ app.get('/view/:email_id', async (req, res) => {
 
 bot.on('interactionCreate', async (interaction) => {
   // if not button or modal, ignore
-  if (!interaction.isButton() && !interaction.isModal()) return;  
+  if (!interaction.isButton() && !interaction.isModalSubmit) return;  
 
   // Check if the button click is from the reply button
   if (interaction.customId.startsWith('reply_')) {
