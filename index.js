@@ -67,7 +67,7 @@ app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
   const message = `**New Email Received**\nFrom: ${filteredEmails}\nSubject: ${emailData.subject}\n\n${emailData.text}`;
 
   let dataToSave = emailData.html;
-  let viewID = generateUnique8DigitId();
+  let viewID = email_id;
   let filePath = `${htmlFileFolder}/${viewID}.html`;
 
   fs.writeFile(filePath, dataToSave, (err) => {
@@ -241,8 +241,11 @@ bot.on('interactionCreate', async (interaction) => {
           console.error(error);
           await interaction.reply({ content: "Email failed to send!", ephemeral: false });
         });
+      return;  
     }
+    await interaction.reply({ content: "Email failed to send!", ephemeral: false });
   }
+
 });
 
 
