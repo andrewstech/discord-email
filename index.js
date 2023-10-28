@@ -65,8 +65,9 @@ app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
   let accessKey = generateUnique8DigitId();
 
   const messageEmbed = new EmbedBuilder()
-    .setTitle(`New Email Received`)
-    .setDescription(`From: ${filteredEmails} \n Subject: ${emailData.subject} \n\n ${emailData.text}`);
+    .setTitle(emailData.subject)
+    .setAuthor(filteredEmails)
+    .setDescription(emailData.text);
   let dataToSave = emailData.html;
   let viewID = email_id;
   let filePath = `${htmlFileFolder}/${viewID}.html`;
@@ -96,8 +97,9 @@ app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
     if (channel) {
       if (message.length >= maxMessageLength) {
         const errorEmbed = new EmbedBuilder()
-          .setTitle('Error')
-          .setDescription(`The message is too long to be sent to Discord. \n From: ${filteredEmails} \n Subject: ${emailData.subject}`);
+          .setTitle(emailData.subject)
+          .setAuthor(filteredEmails)
+          .setDescription('The email was too long to be sent to Discord.');
         await channel.send({
           embeds: [errorEmbed],
           components: [row],
@@ -204,7 +206,7 @@ bot.on('interactionCreate', async (interaction) => {
 
   if (interaction.customId.startsWith('compose_')) {
     const emailId = interaction.customId.substring(8);
-    const message = interaction.values.message;
+    const message = interaction.fields.getTextInputValue('message');
     console.log("Replying to email " + emailId + " with message: " + message)
 
     // Implement your reply functionality here, such as sending an email and handling confirmation
