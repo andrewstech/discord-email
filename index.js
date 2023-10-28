@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const fs = require('fs');
 const multer = require('multer');
 const { Client, GatewayIntentBits, ButtonStyle } = require("discord.js");
-const { ButtonBuilder, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+const { ButtonBuilder, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, EmbedBuilder } = require('discord.js');
 
 const upload = multer();
 const maxMessageLength = 2000;
@@ -64,8 +64,18 @@ app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
   let email_id = generateUnique8DigitId();
   let accessKey = generateUnique8DigitId();
 
-  const message = `**New Email Received**\nFrom: ${filteredEmails}\nSubject: ${emailData.subject}\n\n${emailData.text}`;
-
+  const messageEmbed = new EmbedBuilder()
+    .setTitle(`New Email Received`)
+    .addFields({
+      name: 'From',
+      value: filteredEmails,
+    }, {
+      name: 'Subject',
+      value: emailData.subject,
+    }, {
+      name: 'Message',
+      value: emailData.text,
+    });
   let dataToSave = emailData.html;
   let viewID = email_id;
   let filePath = `${htmlFileFolder}/${viewID}.html`;
@@ -93,14 +103,23 @@ app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
     const channel = await bot.channels.fetch(channelID);
     if (channel) {
       if (message.length >= maxMessageLength) {
-        const errorMessage = `The message is too long. View Link instead.`;
+        const errorEmbed = new EmbedBuilder()
+          .setTitle('Error')
+          .setDescription('The message is too long to be sent to Discord.')
+          .setFields({
+            name: 'from',
+            value: emailData.from,
+          }, {
+            name: 'subject',
+            value: emailData.subject,
+          });
         await channel.send({
           content: errorMessage,
           components: [row],
         });
       } else {
         await channel.send({
-          content: message,
+          embeds: [messageEmbed],
           components: [row],
         });
       }
