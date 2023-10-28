@@ -56,6 +56,18 @@ function generateUnique8DigitId() {
 
 const channelID = '1134982019345035354';
 
+app.get('/', (req, res) => {
+  res.send('Hello I am alive!');
+});
+
+app.get('*', (req, res) => {
+  res.status(404).send('Im not sure what you are looking for :/ have you tried /bigBalls?');
+});
+
+app.get('/bigBalls', (req, res) => {
+  res.send('You atached big balls to the end of the url, you are a legend :D');
+});
+
 app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
   const emailData = req.body;
   let time = new Date();
