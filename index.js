@@ -15,6 +15,7 @@ const emailRegex = /[\w\.-]+@[\w\.-]+\.[\w\.-]+/;
 const app = express();
 const PORT = process.env.PORT || 3000;
 const htmlFileFolder = './email_htmls';
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
