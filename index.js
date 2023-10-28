@@ -203,6 +203,7 @@ bot.on('interactionCreate', async (interaction) => {
   if (interaction.customId.startsWith('compose_')) {
     const emailId = interaction.customId.substring(8);
     const message = interaction.values.message;
+    console.log("Replying to email " + emailId + " with message: " + message)
 
     // Implement your reply functionality here, such as sending an email and handling confirmation
     const emailData = await EmailModel.findOne({ emailId });
