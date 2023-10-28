@@ -62,6 +62,7 @@ app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
   let filteredEmails = emailData.from.match(emailRegex);
   filteredEmails = filteredEmails[0];
   let email_id = generateUnique8DigitId();
+  let accessKey = generateUnique8DigitId();
 
   const message = `**New Email Received**\nFrom: ${filteredEmails}\nSubject: ${emailData.subject}\n\n${emailData.text}`;
 
@@ -77,9 +78,8 @@ app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
     }
   });
 
-  const accessKey = generateUnique8DigitId();
   const reply = new ButtonBuilder()
-    .setCustomId(email_id)
+    .setCustomId('reply_' + email_id)
     .setLabel("Reply")
     .setStyle(ButtonStyle.Danger);
   const view = new ButtonBuilder()
