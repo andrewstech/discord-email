@@ -70,7 +70,7 @@ app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
   let dataToSave = emailData.html;
   let viewID = email_id;
   let filePath = `${htmlFileFolder}/${viewID}.html`;
-  let message = emailData.text;
+  const message = `**New Email Received**\nFrom: ${filteredEmails}\nSubject: ${emailData.subject}\n\n${emailData.text}`;
 
   fs.writeFile(filePath, dataToSave, (err) => {
     if (err) {
@@ -156,7 +156,8 @@ app.get('/view/:email_id', async (req, res) => {
 });
 
 bot.on('interactionCreate', async (interaction) => {
-  if (!interaction.isButton()) return;
+  // if not button or modal, ignore
+  if (!interaction.isButton() && !interaction.isModal()) return;  
 
   // Check if the button click is from the reply button
   if (interaction.customId.startsWith('reply_')) {
