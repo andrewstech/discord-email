@@ -171,36 +171,7 @@ app.get('/view/:email_id', async (req, res) => {
 
 bot.on('interactionCreate', async (interaction) => {
   // if not button or modal, ignore
-  if (interaction.customId === 'new') {
-    const modal = new ModalBuilder()
-      .setCustomId('compose')
-      .setTitle('New Email');
-
-    const to = new TextInputBuilder()
-      .setCustomId('to')
-      .setLabel('To')
-      .setPlaceholder('To')
-      .setRequired(true);
-
-    const subject = new TextInputBuilder()
-      .setCustomId('subject')
-      .setLabel('Subject')
-      .setPlaceholder('Subject')
-      .setRequired(true);
-
-    const message = new TextInputBuilder()
-      .setCustomId('message')
-      .setLabel('Message')
-      .setPlaceholder('Message')
-      .setStyle(TextInputStyle.Paragraph)
-      .setRequired(true);
-
-    const firstActionRow = new ActionRowBuilder().addComponents(to, subject);
-    const secondActionRow = new ActionRowBuilder().addComponents(message);
-    modal.addComponents(firstActionRow, secondActionRow);
-
-    await interaction.showModal(modal);
-  }
+  if (!interaction.isButton() && !interaction.isModalSubmit) return;  
 
   // Check if the button click is from the reply button
   if (interaction.customId.startsWith('reply_')) {
@@ -265,7 +236,8 @@ bot.on('interactionCreate', async (interaction) => {
       const post = {
         "598245488977903688": "andrew@maintainers.is-a.dev",
         "853158265466257448": "william@maintainers.is-a.dev",
-        "757296951925538856": "dibster@maintainers.is-a.dev"
+        "757296951925538856": "dibster@maintainers.is-a.dev",
+        "914452175839723550": "vaibhav@maintainers.is-a.dev"
       };
 
       let from = post[interaction.user.id] || "hello@maintainers.is-a.dev";
