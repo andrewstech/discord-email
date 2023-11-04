@@ -171,7 +171,7 @@ app.get('/view/:email_id', async (req, res) => {
 
 bot.on('interactionCreate', async (interaction) => {
   // if not button or modal, ignore
-  if (!interaction.isButton() && !interaction.isModalSubmit) return;  
+  if (!interaction.isButton() && !interaction.isModalSubmit && !interaction.isCommand) return;  
 
   if (interaction.customId === 'new') {
     const modal = new ModalBuilder()
