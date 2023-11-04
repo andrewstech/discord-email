@@ -60,9 +60,7 @@ app.get('/', (req, res) => {
   res.send('Hello I am alive!');
 });
 
-app.get('*', (req, res) => {
-  res.status(404).send('Im not sure what you are looking for :/ have you tried /bigBalls?');
-});
+
 
 app.get('/bigBalls', (req, res) => {
   res.send('You atached big balls to the end of the url, you are a legend :D');
@@ -174,6 +172,37 @@ app.get('/view/:email_id', async (req, res) => {
 bot.on('interactionCreate', async (interaction) => {
   // if not button or modal, ignore
   if (!interaction.isButton() && !interaction.isModalSubmit) return;  
+
+  if (interaction.customId === 'new') {
+    const modal = new ModalBuilder()
+      .setCustomId('compose')
+      .setTitle('New Email');
+
+    const to = new TextInputBuilder()
+      .setCustomId('to')
+      .setLabel('To')
+      .setPlaceholder('To')
+      .setRequired(true);
+
+    const subject = new TextInputBuilder()
+      .setCustomId('subject')
+      .setLabel('Subject')
+      .setPlaceholder('Subject')
+      .setRequired(true);
+
+    const message = new TextInputBuilder()
+      .setCustomId('message')
+      .setLabel('Message')
+      .setPlaceholder('Message')
+      .setStyle(TextInputStyle.Paragraph)
+      .setRequired(true);
+
+    const firstActionRow = new ActionRowBuilder().addComponents(to, subject);
+    const secondActionRow = new ActionRowBuilder().addComponents(message);
+    modal.addComponents(firstActionRow, secondActionRow);
+
+    await interaction.showModal(modal);
+  }
 
   // Check if the button click is from the reply button
   if (interaction.customId.startsWith('reply_')) {
