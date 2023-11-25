@@ -66,7 +66,7 @@ app.get('/bigBalls', (req, res) => {
   res.send('You atached big balls to the end of the url, you are a legend :D');
 });
 
-app.post('/sendgrid-webhook', upload.none(), async (req, res) => {
+app.post('/sendgrid-webhook', upload.any(), async (req, res) => {
   const emailData = req.body;
   let time = new Date();
   console.log(time);
