@@ -76,10 +76,7 @@ app.post('/sendgrid-webhook', upload.any(), async (req, res) => {
   let email_id = generateUnique8DigitId();
   let accessKey = generateUnique8DigitId();
 
-  const messageEmbed = new EmbedBuilder()
-    .setTitle(emailData.subject)
-    .setAuthor({name: filteredEmails})
-    .setDescription(emailData.text);
+  
   let dataToSave = emailData.html;
   let viewID = email_id;
   let filePath = `${htmlFileFolder}/${viewID}.html`;
@@ -117,6 +114,10 @@ app.post('/sendgrid-webhook', upload.any(), async (req, res) => {
           components: [row],
         });
       } else {
+        const messageEmbed = new EmbedBuilder()
+          .setTitle(emailData.subject)
+          .setAuthor({name: filteredEmails})
+          .setDescription(emailData.text);
         await channel.send({
           embeds: [messageEmbed],
           components: [row],
