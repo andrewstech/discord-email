@@ -238,7 +238,9 @@ bot.on('interactionCreate', async (interaction) => {
         "598245488977903688": "andrew@maintainers.is-a.dev",
         "853158265466257448": "william@maintainers.is-a.dev",
         "757296951925538856": "dibster@maintainers.is-a.dev",
-        "914452175839723550": "vaibhav@maintainers.is-a.dev"
+        "914452175839723550": "vaibhav@maintainers.is-a.dev",
+        "716134528409665586": "maskduck@maintainers.is-a.dev",
+        "763767239018938368": "mahir@maintainers.is-a.dev"
       };
 
       let from = post[interaction.user.id] || "hello@maintainers.is-a.dev";
